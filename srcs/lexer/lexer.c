@@ -69,37 +69,23 @@ int	parse_word_token(char *str, int i, t_lexer **lexer_list)
 	return (j);
 }
 
-int token_reader(t_tools *tools)
+int	token_reader(t_tools *tools)
 {
-    int i;
-    int j;
+	int	i;
+	int	j;
 
-    i = 0;
-    while (tools->args[i])
-    {
-        j = 0;
-        printf("DEBUG: Before skip_spaces: i = %d, char = '%c'\n", i, tools->args[i]);
-
-        i = skip_spaces(tools->args, i);
-        
-        printf("DEBUG: After skip_spaces: i = %d, char = '%c'\n", i, tools->args[i]);
-
-        if (get_token_type(tools->args[i])) {
-            printf("DEBUG: Found special token at i = %d, char = '%c'\n", i, tools->args[i]);
-            j = parse_special_token(tools->args, i, &tools->lexer_list);
-        }
-        else {
-            printf("DEBUG: Found word token at i = %d, char = '%c'\n", i, tools->args[i]);
-            j = parse_word_token(tools->args, i, &tools->lexer_list);
-        }
-
-        printf("DEBUG: Parsed token: j = %d\n", j);
-
-        if (j < 0)
-            return (0);
-        
-        i += j;
-        printf("DEBUG: Updated i = %d\n", i);
-    }
-    return (1);
+	i = 0;
+	while (tools->args[i])
+	{
+		j = 0;
+		i = skip_spaces(tools->args, i);
+		if (get_token_type(tools->args[i]))
+			j = parse_special_token(tools->args, i, &tools->lexer_list);
+		else
+			j = parse_word_token(tools->args, i, &tools->lexer_list);
+		if (j < 0)
+			return (0);
+		i += j;
+	}
+	return (1);
 }
