@@ -2,12 +2,12 @@
 
 static size_t ft_strlen(const char *s)
 {
-	size_t i;
-	i = 0;
-	while(s)
+	size_t i = 0;
+	while (s[i])
 		i++;
-	return(i);
+	return i;
 }
+
 
 char	*ft_substr(char const *s, unsigned int start, size_t len)
 {
@@ -56,18 +56,22 @@ int	skip_spaces(char *str, int i)
 	return (i);
 }
 
-int	count_quotes(int i, char *str)
+int count_quotes(int i, char *str)
 {
-	int		j;
-	char	quote;
+    char quote;
+    int  j;
 
-	j = 1;
-	quote = str[i];
-	while (str[i + j] && str[i + j] != quote)
-		j++;
-	if (str[i + j] == quote)
-		j++;
-	return (j);
+    if (!str[i])
+        return (0);
+    quote = str[i];
+    j = 1;
+    while (str[i + j])
+    {
+        if (str[i + j] == quote)
+            return (j + 1);
+        j++;
+    }
+    return (-1);
 }
 
 int	add_lexer_node(char *str, int token, t_lexer **lexer_list)

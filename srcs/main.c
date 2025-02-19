@@ -2,58 +2,56 @@
 #include <stdlib.h>
 #include <readline/readline.h>
 #include <readline/history.h>
-#include "lexer.h"
+#include "../include/lexer.h"
 
-void print_tokens(t_lexer *lexer_list)
+void free_lexer_list(t_lexer *lexer)
 {
-    t_lexer *current = lexer_list;
-
-    if (!current)
+    t_lexer *tmp;
+    
+    while (lexer)
     {
-        printf("Error: lexer_list is empty!\n");
-        return;
+        tmp = lexer;
+        lexer = lexer->next;
+        if (tmp->str)
+            free(tmp->str);
+        free(tmp);
     }
-
-    printf("\n--- Tokenized Input ---\n");
-    while (current)
-    {
-        printf("Token: %-10s Type: %d\n", current->str ? current->str : "(NULL)", current->token);
-        current = current->next;
-    }
-    printf("------------------------\n");
 }
 
 int main(void)
 {
-    char *input;
+    char    *input;
     t_tools tools;
+    t_lexer *current;
 
-    while (1)
+    input = readline("minishell> ");
+    if (!input)
     {
-        input = readline("minishell> ");
-        if (!input)
-        {
-            printf("exit\n");
-            break;
-        }
-        if (*input)
-            add_history(input);
-
-        tools.args = input;
-        tools.lexer_list = NULL;
-
-        printf("Debug: Running token_reader()...\n");
-        if (!token_reader(&tools))
-        {
-            printf("Lexer error: invalid tokenization.\n");
-        }
-        else
-        {
-            printf("Debug: token_reader() finished successfully.\n");
-            print_tokens(tools.lexer_list);
-        }
-
-        free(input);
+        fprintf(stderr, "入力エラー\n");
+        return (1);
     }
-    return 0;
+    if (*input)
+        add_history(input);
+
+    tools.args = input;
+    tools.lexer_list = NULL;
+
+    if (!token_reader(&tools))
+    {
+        fprintf(stderr, "トークン解析エラー\n");
+        free(input);
+        return (1);
+    }
+    current = tools.lexer_list;
+    while (current)
+    {
+        if (current->str)
+            printf("Token: token = %d, str = \"%s\", i = %d\n", current->token, current->str, current->i);
+        else
+            printf("Token: token = %d, i = %d\n", current->token, current->i);
+        current = current->next;
+    }
+    free_lexer_list(tools.lexer_list);
+    free(input);
+    return (0);
 }
