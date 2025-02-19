@@ -1,11 +1,7 @@
 #ifndef TOKENS_H
 # define TOKENS_H
 
-# define TOKEN_PIPE 1
-# define REDIR_OUT 2
-# define REDIR_IN 3
-# define APPEND_OUT 4
-# define HEREDOC 5
+#include<stdlib.h>
 
 typedef struct s_lexer
 {
@@ -16,6 +12,12 @@ typedef struct s_lexer
     struct s_lexer *prev;
 } t_lexer;
 
+typedef struct s_tools
+{
+    char *args;
+    t_lexer *lexer_list;
+} t_tools;
+
 enum	e_token_type
 {
 	TOKEN_PIPE = 1,
@@ -24,5 +26,14 @@ enum	e_token_type
 	APPEND_OUT,
 	HEREDOC
 };
+
+int	token_reader(t_tools *tools);
+int	add_lexer_node(char *str, int token, t_lexer **lexer_list);
+int	is_space(char c);
+char	*ft_substr(char const *s, unsigned int start, size_t len);
+int	skip_spaces(char *str, int i);
+int	count_quotes(int i, char *str);
+t_lexer	*ft_lexernew(char *str, int token);
+void	ft_lexer_back(t_lexer **lst, t_lexer *new);
 
 #endif

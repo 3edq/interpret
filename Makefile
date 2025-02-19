@@ -1,8 +1,9 @@
 NAME = minishell
 
-SRCS = main.c \
-       lexer/lexer.c \
-       parser/parser.c
+SRCS = srcs/main.c \
+       srcs/lexer/lexer.c \
+       srcs/lexer/lexer_util.c
+
 OBJS = $(SRCS:.c=.o)
 
 CC = cc

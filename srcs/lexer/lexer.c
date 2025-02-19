@@ -1,4 +1,5 @@
 #include "../include/lexer.h"
+#include<stdio.h>
 
 int	get_token_type(int c)
 {

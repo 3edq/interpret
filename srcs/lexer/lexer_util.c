@@ -1,5 +1,53 @@
 #include "../include/lexer.h"
 
+static size_t ft_strlen(const char *s)
+{
+	size_t i;
+	i = 0;
+	while(s)
+		i++;
+	return(i);
+}
+
+char	*ft_substr(char const *s, unsigned int start, size_t len)
+{
+	char	*substr;
+	size_t	i;
+	size_t	str_len;
+
+	if (!s)
+		return (NULL);
+	str_len = ft_strlen(s);
+	if (start >= str_len)
+	{
+		substr = (char *)malloc(1);
+		if (!substr)
+			return (NULL);
+		substr[0] = '\0';
+		return (substr);
+	}
+	if (len > str_len - start)
+		len = str_len - start;
+	substr = (char *)malloc(len + 1);
+	if (!substr)
+		return (NULL);
+	i = 0;
+	while (i < len)
+		substr[i++] = s[start++];
+	substr[i] = '\0';
+	return (substr);
+}
+
+int	is_space(char c)
+{
+	int	i;
+
+	i = 0;
+	if (c == ' ' || (c >= 9 && c <= 13))
+		return (1);
+	else
+		return (0);
+}
 
 int	skip_spaces(char *str, int i)
 {
@@ -10,8 +58,8 @@ int	skip_spaces(char *str, int i)
 
 int	count_quotes(int i, char *str)
 {
-	int j;
-	char quote;
+	int		j;
+	char	quote;
 
 	j = 1;
 	quote = str[i];
