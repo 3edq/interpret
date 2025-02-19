@@ -46,9 +46,9 @@ int main(void)
     while (current)
     {
         if (current->str)
-            printf("Token: token = %d, str = \"%s\", i = %d\n", current->token, current->str, current->i);
+            printf("token = %d, str = \"%s\", i = %d\n", current->token, current->str, current->i);
         else
-            printf("Token: token = %d, i = %d\n", current->token, current->i);
+            printf("token = %d, i = %d\n", current->token, current->i);
         current = current->next;
     }
     free_lexer_list(tools.lexer_list);
