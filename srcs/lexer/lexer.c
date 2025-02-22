@@ -61,7 +61,7 @@ int	parse_word_token(char *str, int i, t_lexer **lexer_list)
 			j++;
 	}
 	word = ft_substr(str, i, j);
-	if (!word || !add_lexer_node(word, 0, lexer_list))
+	if (!word || !add_lexer_node(word, TOKEN_WORD, lexer_list))
 	{
 		free(word);
 		return (-1);

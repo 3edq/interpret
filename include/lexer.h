@@ -2,6 +2,7 @@
 # define TOKENS_H
 
 #include<stdlib.h>
+#include "../libft/libft.h"
 
 typedef struct s_lexer
 {
@@ -24,7 +25,8 @@ enum	e_token_type
 	REDIR_OUT,
 	REDIR_IN,
 	APPEND_OUT,
-	HEREDOC
+	HEREDOC,
+    TOKEN_WORD
 };
 
 int	token_reader(t_tools *tools);
