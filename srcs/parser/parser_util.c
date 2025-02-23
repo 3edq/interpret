@@ -31,7 +31,6 @@ int	handle_pipe(t_lexer **lexer, t_command **current)
 	(*current) = (*current)->next;
 	return (1);
 }
-
 static int	handle_redir_out(t_lexer **lexer, t_command *current)
 {
 	if ((*lexer)->token != REDIR_OUT && (*lexer)->token != APPEND_OUT)
@@ -48,7 +47,7 @@ static int	handle_redir_out(t_lexer **lexer, t_command *current)
 		current->append = 1;
 	else
 		current->append = 0;
-	*lexer = (*lexer)->next;
+	*lexer = (*lexer)->next->next;
 	return (1);
 }
 
@@ -64,7 +63,7 @@ static int	handle_heredoc(t_lexer **lexer, t_command *current)
 	current->input_file = ft_strdup((*lexer)->next->str);
 	if (!current->input_file)
 		return (-1);
-	*lexer = (*lexer)->next;
+	*lexer = (*lexer)->next->next;
 	return (1);
 }
 
