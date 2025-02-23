@@ -1,7 +1,6 @@
 #include "../include/lexer.h"
 #include "../include/parser.h"
 
-
 t_command	*new_command(void)
 {
 	t_command	*cmd;
@@ -38,27 +37,27 @@ static int	add_argument(t_command *cmd, char *arg)
 	cmd->args = new_args;
 	return (1);
 }
-
 static int	process_token(t_lexer **lexer_list, t_command **current)
 {
 	int	ret;
 
 	ret = handle_pipe(lexer_list, current);
 	if (ret == 1)
-	{
-		*lexer_list = (*lexer_list)->next;
 		return (1);
-	}
 	ret = which_redirect(lexer_list, *current);
 	if (ret != 0)
 		return (ret);
-	if ((*lexer_list)->token == 0)
+	if ((*lexer_list)->token == TOKEN_WORD)
 	{
-		if (!add_argument(*current, (*lexer_list)->str)) //add normal word
+		if ((*lexer_list)->str && (*lexer_list)->str[0] != '\0')
 		{
-			fprintf(stderr, "Memory allocation error\n");
-			return (-1);
+			if (!add_argument(*current, (*lexer_list)->str))
+			{
+				fprintf(stderr, "Memory allocation error\n");
+				return (-1);
+			}
 		}
+		*lexer_list = (*lexer_list)->next;
 	}
 	return (0);
 }
@@ -78,7 +77,6 @@ t_command	*parse_tokens(t_lexer *lexer_list)
 		ret = process_token(&lexer_list, &current);
 		if (ret == -1)
 			return (head);
-		lexer_list = lexer_list->next;
 	}
 	return (head);
 }

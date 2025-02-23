@@ -1,5 +1,5 @@
-#include "../include/parser.h"
 #include "../include/lexer.h"
+#include "../include/parser.h"
 
 void	*ft_realloc(void *ptr, size_t new_size)
 {
@@ -12,14 +12,11 @@ void	*ft_realloc(void *ptr, size_t new_size)
 	}
 	if (!ptr)
 		return (malloc(new_size));
-
 	new_ptr = malloc(new_size);
 	if (!new_ptr)
 		return (NULL);
-
-	memcpy(new_ptr, ptr, new_size);
+	ft_memcpy(new_ptr, ptr, new_size);
 	free(ptr);
-
 	return (new_ptr);
 }
 
@@ -27,10 +24,11 @@ int	handle_pipe(t_lexer **lexer, t_command **current)
 {
 	if ((*lexer)->token != TOKEN_PIPE)
 		return (0);
+	(*lexer) = (*lexer)->next;
 	(*current)->next = new_command();
 	if (!(*current)->next)
 		return (0);
-	*current = (*current)->next;
+	(*current) = (*current)->next;
 	return (1);
 }
 
@@ -81,10 +79,7 @@ int	which_redirect(t_lexer **lexer_list, t_command *current)
 		return (-1);
 	}
 	if (ret == 1)
-	{
-		*lexer_list = (*lexer_list)->next;
 		return (1);
-	}
 	ret = handle_redir_out(lexer_list, current);
 	if (ret == -1)
 	{
@@ -92,9 +87,6 @@ int	which_redirect(t_lexer **lexer_list, t_command *current)
 		return (-1);
 	}
 	if (ret == 1)
-	{
-		*lexer_list = (*lexer_list)->next;
 		return (1);
-	}
 	return (0);
 }
