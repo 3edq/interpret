@@ -1,9 +1,38 @@
-#include "../include/lexer.h"
-#include "../include/parser.h"
-#include <readline/history.h>
-#include <readline/readline.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include "../include/minishell.h"
+
+void	free_env(char **envp)
+{
+	int	i;
+
+	i = 0;
+	while (envp[i])
+	{
+		free(envp[i]);
+		i++;
+	}
+	free(envp);
+}
+
+char	**copy_env(char **envp)
+{
+	int		i;
+	char	**new_env;
+
+	i = 0;
+	while (envp[i])
+		i++;
+	new_env = malloc(sizeof(char *) * (i + 1));
+	if (!new_env)
+		return (NULL);
+	i = 0;
+	while (envp[i])
+	{
+		new_env[i] = strdup(envp[i]);
+		i++;
+	}
+	new_env[i] = NULL;
+	return (new_env);
+}
 
 void	free_commands(t_command *cmd)
 {
@@ -32,39 +61,6 @@ void	free_commands(t_command *cmd)
 	}
 }
 
-void	print_commands(t_command *cmd)
-{
-	int	i;
-	int	cmd_no;
-
-	cmd_no = 1;
-	while (cmd)
-	{
-		printf("Command %d:\n", cmd_no);
-		if (cmd->args)
-		{
-			i = 0;
-			while (cmd->args[i])
-			{
-				printf("  Arg[%d]: %s\n", i, cmd->args[i]);
-				i++;
-			}
-		}
-		if (cmd->input_file)
-			printf("  Input: %s\n", cmd->input_file);
-		if (cmd->output_file)
-		{
-			printf("  Output: %s ", cmd->output_file);
-			if (cmd->append == 1)
-				printf("(append)\n");
-			else
-				printf("(overwrite)\n");
-		}
-		cmd = cmd->next;
-		cmd_no++;
-	}
-}
-
 void	free_lexer_list(t_lexer *lexer)
 {
 	t_lexer	*tmp;
@@ -84,20 +80,25 @@ void	free_tools(t_tools *tools)
 	free_lexer_list(tools->lexer_list);
 	free(tools->args);
 }
-
-int	main(void)
+int	main(int argc, char **argv, char **envp)
 {
+	char		**my_envp;
 	char		*input;
 	t_tools		tools;
 	t_command	*cmd_list;
+	int			last_exit_status;
 
+	(void)argc;
+	(void)argv;
+	my_envp = copy_env(envp);
+	last_exit_status = 0;
 	while (1)
 	{
 		input = readline("minishell> ");
 		if (!input)
 		{
-			fprintf(stderr, "入力エラー\n");
-			return (1);
+			write(1, "exit\n", 5);
+			break ;
 		}
 		if (*input)
 			add_history(input);
@@ -116,9 +117,19 @@ int	main(void)
 			free_tools(&tools);
 			continue ;
 		}
-		print_commands(cmd_list);
+		if (cmd_list->args && ft_strcmp(cmd_list->args[0], "exit") == 0)
+		{
+			if (cmd_list->args[1])
+				last_exit_status = ft_atoi(cmd_list->args[1]);
+			free_commands(cmd_list);
+			free_tools(&tools);
+			free_env(my_envp);
+			exit(last_exit_status);
+		}
+		judge_command_list(cmd_list, &my_envp, &last_exit_status);
 		free_commands(cmd_list);
 		free_tools(&tools);
 	}
-	return (0);
+	free_env(my_envp);
+	return (last_exit_status);
 }

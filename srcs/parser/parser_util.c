@@ -31,6 +31,7 @@ int	handle_pipe(t_lexer **lexer, t_command **current)
 	(*current) = (*current)->next;
 	return (1);
 }
+
 static int	handle_redir_out(t_lexer **lexer, t_command *current)
 {
 	if ((*lexer)->token != REDIR_OUT && (*lexer)->token != APPEND_OUT)
